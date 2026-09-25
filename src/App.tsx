@@ -117,7 +117,7 @@ export default function App() {
     0
   );
 
-  const deliveryCost = 1.5; // Costo fijo de delivery
+  const deliveryCost = 1.0; // Costo fijo de delivery
 
   const total =
     subtotal + deliveryCost;
