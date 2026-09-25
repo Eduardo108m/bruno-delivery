@@ -1,0 +1,41 @@
+#root {
+  min-height: 100vh;
+}
+
+/* Ocultar scrollbar pero permitir desplazamiento */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Animaciones */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s ease-out;
+}
+
+/* Pulsación */
+.active-scale:active {
+  transform: scale(0.97);
+}
+
+/* Para dispositivos pequeños */
+@media (max-width: 380px) {
+  .mobile-small-text {
+    font-size: 0.85rem;
+  }
+}
