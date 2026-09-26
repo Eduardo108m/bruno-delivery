@@ -60,7 +60,7 @@ export default function App() {
   // ==========================================
 
   const [activeTab, setActiveTab] = useState<
-    "inicio" | "pedidos" | "perfil"
+    "inicio" | "pedidos" | "perfil" | "carrito"
   >("inicio");
 
   // ==========================================
@@ -811,143 +811,115 @@ export default function App() {
           }
         />
 
-        {/* ====================================
-            CARRITO
-        ==================================== */}
-
-        {cart.length > 0 && (
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <h3 className="font-black text-gray-900">
-              🛒 Pedido actual
-            </h3>
-
-            <div className="mt-4 space-y-3">
-              {cart.map(
-                (item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">
-                        {item.name}
-                      </p>
-
-                      <p className="text-sm text-gray-500">
-                        $
-                        {item.price.toFixed(
-                          2
-                        )}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateQuantity(
-                            item.id,
-                            item.quantity -
-                              1
-                          )
-                        }
-                        className="h-8 w-8 rounded-lg bg-gray-100 font-bold"
-                      >
-                        −
-                      </button>
-
-                      <span className="w-5 text-center font-bold">
-                        {
-                          item.quantity
-                        }
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateQuantity(
-                            item.id,
-                            item.quantity +
-                              1
-                          )
-                        }
-                        className="h-8 w-8 rounded-lg bg-gray-100 font-bold"
-                      >
-                        +
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          removeFromCart(
-                            item.id
-                          )
-                        }
-                        className="ml-1 text-red-500"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-
-            <div className="mt-5 border-t border-gray-100 pt-4">
-              <div className="flex justify-between text-sm">
-                <span>
-                  Subtotal
-                </span>
-
-                <span>
-                  $
-                  {subtotal.toFixed(
-                    2
-                  )}
-                </span>
-              </div>
-
-              <div className="mt-1 flex justify-between text-sm">
-                <span>
-                  Delivery
-                </span>
-
-                <span>
-                  $
-                  {deliveryCost.toFixed(
-                    2
-                  )}
-                </span>
-              </div>
-
-              <div className="mt-2 flex justify-between text-lg font-black">
-                <span>
-                  Total
-                </span>
-
-                <span className="text-red-500">
-                  $
-                  {total.toFixed(
-                    2
-                  )}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={
-                  handleCheckout
-                }
-                className="mt-4 w-full rounded-xl bg-red-500 px-4 py-3 font-black text-white hover:bg-red-600"
-              >
-                📲 Pedir por WhatsApp
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
+
+  // ==========================================
+  // CARRITO
+  // ==========================================
+
+  const renderCart = () => (
+    <div className="space-y-5">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-red-600">
+            Resumen de compra
+          </p>
+          <h2 className="mt-1 text-2xl font-black text-gray-900">
+            Carrito de compras
+          </h2>
+        </div>
+        <button
+          type="button"
+          onClick={() => setActiveTab("inicio")}
+          className="shrink-0 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100"
+        >
+          Seguir comprando
+        </button>
+      </div>
+
+      {cart.length === 0 ? (
+        <div className="rounded-2xl border border-gray-200 bg-white px-5 py-10 text-center shadow-sm">
+          <p className="text-4xl" aria-hidden="true">🛒</p>
+          <p className="mt-3 font-bold text-gray-900">Tu carrito está vacío</p>
+          <p className="mt-1 text-sm text-gray-500">Agrega un servicio para empezar tu pedido.</p>
+          <button
+            type="button"
+            onClick={() => setActiveTab("inicio")}
+            className="mt-5 rounded-xl bg-red-600 px-4 py-3 font-bold text-white transition hover:bg-red-700"
+          >
+            Explorar servicios
+          </button>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="divide-y divide-gray-100">
+            {cart.map((item) => (
+              <div key={item.id} className="flex items-center gap-3 py-4 first:pt-0 last:pb-0">
+                <div className="min-w-0 flex-1">
+                  <p className="break-words font-semibold text-gray-900">{item.name}</p>
+                  <p className="mt-1 text-sm text-gray-500">${item.price.toFixed(2)} c/u</p>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    aria-label={`Reducir cantidad de ${item.name}`}
+                    className="h-9 w-9 rounded-lg bg-gray-100 font-bold text-gray-700 transition hover:bg-gray-200"
+                  >
+                    −
+                  </button>
+                  <span className="w-6 text-center font-bold" aria-label={`Cantidad: ${item.quantity}`}>
+                    {item.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    aria-label={`Aumentar cantidad de ${item.name}`}
+                    className="h-9 w-9 rounded-lg bg-gray-100 font-bold text-gray-700 transition hover:bg-gray-200"
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(item.id)}
+                    aria-label={`Eliminar ${item.name} del carrito`}
+                    className="ml-1 rounded-lg px-2 py-2 text-red-600 transition hover:bg-red-50"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 border-t border-gray-100 pt-4">
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="mt-2 flex justify-between text-sm text-gray-600">
+              <span>Envío</span>
+              <span>${deliveryCost.toFixed(2)}</span>
+            </div>
+            <div className="mt-3 flex justify-between border-t border-gray-100 pt-3 text-lg font-black text-gray-900">
+              <span>Total</span>
+              <span className="text-red-600">${total.toFixed(2)}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleCheckout}
+              className="mt-5 w-full rounded-xl bg-red-600 px-4 py-3 font-bold text-white transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
+            >
+              📲 Pedir por WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   // ==========================================
   // PANTALLA INICIAL: NOMBRE
@@ -995,7 +967,7 @@ export default function App() {
                   handleSaveName();
                 }
               }}
-              placeholder="Ej: Jeysson"
+              placeholder="Nombre"
               autoFocus
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 outline-none transition focus:border-red-500 focus:bg-white"
             />
@@ -1044,28 +1016,21 @@ export default function App() {
             </p>
           </div>
 
-          {cart.length > 0 && (
-            <button
-              type="button"
-              onClick={() =>
-                setActiveTab(
-                  "perfil"
-                )
-              }
-              className="relative rounded-xl bg-red-50 px-3 py-2 text-xl"
-            >
-              🛒
+          <button
+            type="button"
+            onClick={() => {
+              setActiveService(null);
+              setActiveTab("carrito");
+            }}
+            aria-label={`Abrir carrito, ${cart.reduce((sum, item) => sum + item.quantity, 0)} productos`}
+            className="relative rounded-xl bg-red-50 px-3 py-2 text-xl transition hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+          >
+            🛒
 
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white">
-                {cart.reduce(
-                  (sum, item) =>
-                    sum +
-                    item.quantity,
-                  0
-                )}
-              </span>
-            </button>
-          )}
+            <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white">
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          </button>
         </div>
       </header>
 
@@ -1104,6 +1069,8 @@ export default function App() {
         ) : activeTab ===
           "pedidos" ? (
           renderOrders()
+        ) : activeTab === "carrito" ? (
+          renderCart()
         ) : (
           renderProfile()
         )}
